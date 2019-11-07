@@ -54,9 +54,6 @@ def greedy_cow_transport(cows,limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    from collections import defaultdict
-    import operator
-    
     # Convert to default dict as to not mutate the original object
     cow_trips = []
     tuple_list = [(k,v) for k,v in cows.items()]
@@ -134,10 +131,10 @@ print(greedy_cow_transport(cows, limit))
 
 print('\n')
 
-# cows_4 = {'Luna': 41, 'Starlight': 54, 'Willow': 59, 'Abby': 28, 'Betsy': 39, 'Rose': 42, 'Coco': 59, 'Buttercup': 11}
-# limit = 120
-# print(cows_4)
-# print(greedy_cow_transport(cows_4, limit))
+cows_4 = {'Luna': 41, 'Starlight': 54, 'Willow': 59, 'Abby': 28, 'Betsy': 39, 'Rose': 42, 'Coco': 59, 'Buttercup': 11}
+limit = 120
+print(cows_4)
+print(greedy_cow_transport(cows_4, limit))
 
 
 # print(brute_force_cow_transport(cows, limit))
