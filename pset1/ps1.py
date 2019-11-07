@@ -99,7 +99,7 @@ def brute_force_cow_transport(cows,limit=10):
     trip_permutation_list = get_partitions(tuple_list)
 
     best_trip = []
-    best_number_of_trips = 10
+    best_number_of_trips = limit
     for trip_permutation in trip_permutation_list:
         best_trip_bool = True
         trips = 0
@@ -112,7 +112,6 @@ def brute_force_cow_transport(cows,limit=10):
                 trip_length = len(trip)
                 trip_weight = sum([cow[1] for cow in trip])
                 if trip_weight > limit:
-
                     best_trip_bool = False
                     break
         except:
