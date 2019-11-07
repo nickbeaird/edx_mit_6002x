@@ -95,9 +95,36 @@ def brute_force_cow_transport(cows,limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    # TODO: Your code here
-    
+    tuple_list = [(k,v) for k,v in cows.items()]
+    trip_permutation_list = get_partitions(tuple_list)
 
+    best_trip = []
+    best_number_of_trips = 10
+    for trip_permutation in trip_permutation_list:
+        best_trip_bool = True
+        trips = 0
+        try:
+            for trip in trip_permutation:
+                if not trip:
+                    best_trip_bool = False
+                    break
+                trips += 1
+                trip_length = len(trip)
+                trip_weight = sum([cow[1] for cow in trip])
+                if trip_weight > limit:
+
+                    best_trip_bool = False
+                    break
+        except:
+            print('Value not understood')
+        else:
+            if best_trip_bool is False:
+                continue
+            if trips < best_number_of_trips:
+                best_number_of_trips = trips
+                best_trip = trip_permutation
+    
+    return best_trip
         
 # Problem 3
 def compare_cow_transport_algorithms():
@@ -128,15 +155,5 @@ limit=10
 print(cows)
 
 print(greedy_cow_transport(cows, limit))
-
-print('\n')
-
-cows_4 = {'Luna': 41, 'Starlight': 54, 'Willow': 59, 'Abby': 28, 'Betsy': 39, 'Rose': 42, 'Coco': 59, 'Buttercup': 11}
-limit = 120
-print(cows_4)
-print(greedy_cow_transport(cows_4, limit))
-
-
-# print(brute_force_cow_transport(cows, limit))
-
+print(brute_force_cow_transport(cows, limit))
 
