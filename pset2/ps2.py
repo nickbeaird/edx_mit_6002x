@@ -176,7 +176,11 @@ class Robot(object):
         room:  a RectangularRoom object.
         speed: a float (speed > 0)
         """
-        raise NotImplementedError
+        self.room = room
+        self.speed = speed
+        self.DIRECTION = int(random.randrange(0, 360))
+        self.POSITION = self.room.getRandomPosition()
+        self.room.cleanTileAtPosition(self.POSITION)
 
     def getRobotPosition(self):
         """
@@ -184,7 +188,7 @@ class Robot(object):
 
         returns: a Position object giving the robot's position.
         """
-        raise NotImplementedError
+        return self.POSITION
     
     def getRobotDirection(self):
         """
@@ -193,7 +197,7 @@ class Robot(object):
         returns: an integer d giving the direction of the robot as an angle in
         degrees, 0 <= d < 360.
         """
-        raise NotImplementedError
+        return self.DIRECTION
 
     def setRobotPosition(self, position):
         """
@@ -201,7 +205,7 @@ class Robot(object):
 
         position: a Position object.
         """
-        raise NotImplementedError
+        self.POSITION = position
 
     def setRobotDirection(self, direction):
         """
@@ -209,7 +213,7 @@ class Robot(object):
 
         direction: integer representing an angle in degrees
         """
-        raise NotImplementedError
+        self.DIRECTION = direction
 
     def updatePositionAndClean(self):
         """
@@ -237,11 +241,17 @@ class StandardRobot(Robot):
         Move the robot to a new position and mark the tile it is on as having
         been cleaned.
         """
-        raise NotImplementedError
+        self.room.cleanTileAtPosition(self.POSITION)
+        potential_position = self.POSITION.getNewPosition(self.DIRECTION, self.speed) 
+        if self.room.isPositionInRoom(potential_position):
+            self.POSITION = potential_position
+        else:
+            random_degree = random.randrange(0, 360)
+            self.DIRECTION = random_degree
 
 
 # Uncomment this line to see your implementation of StandardRobot in action!
-##testRobotMovement(StandardRobot, RectangularRoom)
+# testRobotMovement(StandardRobot, RectangularRoom)
 
 
 # === Problem 4
@@ -263,7 +273,22 @@ def runSimulation(num_robots, speed, width, height, min_coverage, num_trials,
     robot_type: class of robot to be instantiated (e.g. StandardRobot or
                 RandomWalkRobot)
     """
-    raise NotImplementedError
+    results = []
+    for i in range(num_trials):
+        steps = 0
+        room = RectangularRoom(width, height)
+        robots = [robot_type(room, speed) for j in range(num_robots)]
+        while (room.getNumCleanedTiles()/room.getNumTiles()) < min_coverage:
+            steps += 1
+            for robot in robots:
+                robot.updatePositionAndClean()
+            if (room.getNumCleanedTiles()/room.getNumTiles()) >= min_coverage:
+                results.append(steps) 
+                pass
+            else:
+                continue
+    # return mean
+    return sum(results)/len(results)
 
 # Uncomment this line to see how much your simulation takes on average
 ##print(runSimulation(1, 1.0, 10, 10, 0.75, 30, StandardRobot))
@@ -282,7 +307,16 @@ class RandomWalkRobot(Robot):
         Move the robot to a new position and mark the tile it is on as having
         been cleaned.
         """
-        raise NotImplementedError
+        ANGLEMAX = 360
+        ANGLEMIN = 0
+
+        position = self.getRobotPosition().getNewPosition(random.uniform(ANGLEMIN, ANGLEMAX), self.speed)
+        if self.room.isPositionInRoom(position) == False:
+            self.setRobotDirection(random.uniform(ANGLEMIN, ANGLEMAX))
+        else:
+            self.setRobotPosition(position)
+            self.setRobotDirection(random.uniform(ANGLEMIN, ANGLEMAX))
+            self.room.cleanTileAtPosition(position)
 
 
 def showPlot1(title, x_label, y_label):
@@ -316,7 +350,7 @@ def showPlot2(title, x_label, y_label):
         height = 300//width
         print("Plotting cleaning time for a room of width:", width, "by height:", height)
         aspect_ratios.append(float(width) / height)
-        times1.append(runSimulation(2, 1.0, width, height, 0.8, 200, StandardRobot))
+        times1.append(runSimulation(num_robots=2, speed=1.0, width=width, height=height, min_coverage=0.8, num_trials=200, robot_type=StandardRobot))
         times2.append(runSimulation(2, 1.0, width, height, 0.8, 200, RandomWalkRobot))
     pylab.plot(aspect_ratios, times1)
     pylab.plot(aspect_ratios, times2)
