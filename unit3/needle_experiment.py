@@ -1,6 +1,9 @@
 import random
 import math
 
+"""This module estimates the value of pi with a random needle throwing experiment. 
+"""
+
 def stdDev(L=None):
     if not L or len(L) < 1:
         return float('NaN')
