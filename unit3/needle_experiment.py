@@ -50,7 +50,7 @@ def getEstimate(numNeedles, numTrials):
 def estPi(precision, numTrials):
     numNeedles = 1000
     sDev = precision
-    while sDev >= precision/2:
+    while sDev >= precision/1.96:
         curEst, sDev = getEstimate(numNeedles, numTrials)
         numNeedles *= 2
     return curEst
